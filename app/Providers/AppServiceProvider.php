@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\UrlGenerator; // 追加
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,8 +21,9 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(UrlGenerator $url) // 引数追加
+
+    public function boot()
     {
-        $url->forceScheme('https'); // 追加
+        \URL::forceScheme('https');//リンクをHTTPSにする設定を行う
     }
 }
