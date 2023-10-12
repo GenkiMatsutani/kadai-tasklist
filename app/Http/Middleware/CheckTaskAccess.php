@@ -35,7 +35,12 @@ class CheckTaskAccess
         if (!$task || $task->user_id !== auth()->id()) {
             return redirect('/');
         }
-
+        
+        if (strpos($request->url(), 'edit') !== false) {
+            if ($task->user_id !== auth()->id()) {
+                return redirect('/');
+            }
+        }
         return $next($request);
     }
 }

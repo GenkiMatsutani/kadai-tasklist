@@ -37,8 +37,9 @@ Route::get('/', [TasksController::class, 'index']);
 Route::resource('tasks', TasksController::class);
 Route::get('/tasks/{task}', 'TaskController@show')->middleware('check.task.access');
 Route::group(['middleware' => [CheckTaskAccess::class]], function () {
-    Route::get('/tasks/{task}', 'TaskController@show');
+    Route::get('/tasks/{task}', 'TasksController@show');
 });
 Route::get('/tasks/{task}', [TasksController::class, 'show'])->middleware([CheckTaskAccess::class])->name('tasks.show');
-Route::get('/tasks/{task}/edit', [TasksController::class, 'edit'])->name('tasks.edit');
+// Route::get('/tasks/{task}/edit', [TasksController::class, 'edit'])->name('tasks.edit');
+Route::get('/tasks/{task}/edit', 'App\Http\Controllers\TasksController@edit')->name('tasks.edit')->middleware('check.task.access');
 Route::put('/tasks/{task}', [TasksController::class, 'update'])->name('tasks.update');

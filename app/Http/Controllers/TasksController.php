@@ -30,7 +30,7 @@ class TasksController extends Controller
     }
 
     // ログインしていない場合の処理を追加
-    return view('dashboard'); // 例: ログインページにリダイレクト
+    return view('dashboard'); // ログインページにリダイレクト
 }
 
 
@@ -97,10 +97,19 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        // idの値でタスクを検索して取得
-        $task = Task::findOrFail($id);
+        // // idの値でタスクを検索して取得
+        // $task = Task::findOrFail($id);
 
-        // タスク編集ビューでそれを表示
+        // // タスク編集ビューでそれを表示
+        // return view('tasks.edit', [
+        //     'task' => $task,
+        // ]);
+        $task = Task::find($id);
+    
+        if (!$task || $task->user_id !== auth()->id()) {
+            return redirect('/');
+        }
+
         return view('tasks.edit', [
             'task' => $task,
         ]);
