@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TasksController;
+use App\Http\Middleware\CheckTaskAccess;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,18 +16,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [TasksController::class, 'index']);
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [TasksController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('users', UsersController::class, ['only' => ['index', 'show']]);
+    Route::resource('tasks', TasksController::class, ['only' => ['store', 'destroy']]);
+});       
+
+Route::get('/', [TasksController::class, 'index']);
+Route::resource('tasks', TasksController::class);
+Route::get('/tasks/{task}', 'TaskController@show')->middleware('check.task.access');
+Route::group(['middleware' => [CheckTaskAccess::class]], function () {
+    Route::get('/tasks/{task}', 'TaskController@show');
+});
+Route::get('/tasks/{task}', [TasksController::class, 'show'])->middleware([CheckTaskAccess::class])->name('tasks.show');
+Route::get('/tasks/{task}/edit', [TasksController::class, 'edit'])->name('tasks.edit');
+Route::put('/tasks/{task}', [TasksController::class, 'update'])->name('tasks.update');

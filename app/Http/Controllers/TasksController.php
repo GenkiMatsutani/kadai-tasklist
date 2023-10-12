@@ -6,19 +6,32 @@ use Illuminate\Http\Request;
 
 use App\Models\Task;
 
+use Illuminate\Support\Facades\Auth;
+
+
 class TasksController extends Controller
 {
     // getでtasks/にアクセスされた場合の「一覧表示処理」
     public function index()
     {
         // タスク一覧を取得
-        $tasks = Task::all();
+        // $tasks = Task::all();
+        
+    if (Auth::check()) {
+        // ログインユーザーを取得
+        $user = Auth::user();
 
-        // タスク一覧ビューでそれを表示
+        // ログインユーザーの投稿を取得
+        $tasks = $user->tasks;
+
         return view('tasks.index', [
             'tasks' => $tasks,
         ]);
     }
+
+    // ログインしていない場合の処理を追加
+    return view('dashboard'); // 例: ログインページにリダイレクト
+}
 
 
     /**
@@ -52,6 +65,7 @@ class TasksController extends Controller
         $task = new Task;
         $task->status = $request->status;
         $task->content = $request->content;
+        $task->user_id = Auth::user()->id; // ログインユーザーのIDを設定
         $task->save();
 
         // トップページへリダイレクトさせる
@@ -110,6 +124,7 @@ class TasksController extends Controller
         // タスクを更新
         $task->status = $request->status;
         $task->content = $request->content;
+        $task->user_id = Auth::user()->id; // ログインユーザーのIDを設定
         $task->save();
 
         // トップページへリダイレクトさせる
