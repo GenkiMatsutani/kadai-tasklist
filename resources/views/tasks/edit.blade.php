@@ -15,14 +15,14 @@
                     <label for="content" class="label">
                         <span class="label-text">ステータス:</span>
                     </label>
-                    <input type="text" name="status" value="{{ $task->status }}" class="input input-bordered w-full">
+                    <input type="text" name="status" value="{{ $task->status }}" class="input input-bordered w-full" value="{{old('status')}}">
                 </div>
 
                 <div class="form-control my-4">
                     <label for="content" class="label">
                         <span class="label-text">タスク:</span>
                     </label>
-                    <input type="text" name="content" value="{{ $task->content }}" class="input input-bordered w-full">
+                    <input type="text" name="content" value="{{ $task->content }}" class="input input-bordered w-full" value="{{old('content')}}">
                 </div>
 
             <button type="submit" class="btn btn-primary btn-outline">更新</button>

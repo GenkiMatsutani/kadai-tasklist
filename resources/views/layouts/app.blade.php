@@ -14,6 +14,8 @@
         @include('commons.navbar')
 
         <div class="container mx-auto">
+             {{-- エラーメッセージ --}}
+            @include('commons.error_tasks')
 
             @yield('content')
         </div>
